@@ -6,11 +6,6 @@ Slowko::Slowko(string pol, string ang) : sl_pl(pol), sl_ang(ang)
 {
 }
 
-/*const char* Slowko::DajSlowko()
-{
-	return sl_pl.c_str();
-}*/
-
 string Slowko::WypiszPL()
 {
     return sl_pl;

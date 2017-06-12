@@ -6,16 +6,21 @@
 #include<vector>
 using namespace std;
 
+/*Konstruktor klasy, pola inicjalizacyjne ustawione na 0 i null*/
 Scheduler::Scheduler():words_number(0),level(0),punkty(0),suma(0),slownik(NULL), dobrze_czy_nie(false)
 {
 }
 
+/* Funkcja prxypisuje do zmiennej word_number ilość słówek w słowniku i poziom do zmiennej level*/
 void Scheduler::Rozpocznij(int l_slowek, int poziom)
 {
     words_number=l_slowek;
     level=poziom;
 }
 
+/*Funkcja sprawdza czy wskaźnik do słownika jest pusty. Jeśli jest tworzy nowy słownik. Funkcja wczytuje
+ * słownik z pliku o podanej jako argument funkcji nazwie. Zwraca wartość true / false w zależności od tego czy udało się
+ * wczytać słownik z pliku czy też nie.*/
 bool Scheduler::DodajSlownik(string nazwa_pliku)
 {
    if(slownik==NULL)
@@ -26,6 +31,11 @@ bool Scheduler::DodajSlownik(string nazwa_pliku)
    return czy_wczytano;
 }
 
+/*Funkcja tworzy tablicę zawierającą numery słówek z tablicy wszystkich słówek, które zostaną wyświetlone po rozpoczęciu
+ * nauki. Dla wybranej liczby słówek do powtórki funkcja losuje słówko i sprawdza czy nie znajduje się już ono w tablicy słówek
+ * do powtórki. Jeśli tak jest, wewnętrzna petla losuje słówko do momentu aż nie będzie ono duplikatem. Na końcu elementy z tablicy trafiają do
+ * kontenera <vector>. Jest to potrzebne do wydajnego usuwania odgadniętych słówek z listy słówek do powtórki a także dodawania
+ * nieodgadniętych słówek przy kolejnym wywołaniu programu.*/
 void Scheduler::LosujSlowka()
 {
     int *wyl_numery = new int[words_number];
@@ -70,13 +80,19 @@ void Scheduler::LosujSlowka()
     delete[] wyl_numery;
 
 }
+
+/*Funkcja zwraca polskie słówko z początku dynamicznej tablicy słówek bez zmian*/
 string Scheduler::Slowko_PL()
 {
    Slowko temp = TablicaSlow[0];
    return temp.WypiszPL();
 }
 
-
+/*Funkcja zwraca odpowiednio przygotowane słówko angielskie do wyświetlenia. Działanie: pobiera angielskie słówko, wyznacza ilosćć i pozycje na
+ * których znajdują się spacje. Inicjuje słówko o rozmiarze dwa razy większym od oryginalnego słówka. Tworzy słówko w postaci "_ _ _ ......".
+ * W zależności od wybranego poziomu i ilośc znaków w słówku określa ilość zakrytych literek. Dla liczby zakrytych literek losuje pozycje na których
+ * literki będą zakryte za pomocą poskreślnika(_). Wewnetrzna pętla sprawdza czy pozycja do zakrycia się nie powtarza oraz czy pozycja ta
+ * nie pokrywa się z pozycją jakiejkowiek spacji. Na końcu generowane jest angielskie słówko do wyświetlenia z zakrytymi odpowiednimi pozycjami.*/
 string Scheduler::Slowko_ANG()
 {
     Slowko temporary = TablicaSlow.front();
@@ -202,6 +218,11 @@ string Scheduler::Slowko_ANG()
 return puste_slowko;
 }
 
+/*Funkcja dobiera literę z puli zakrytych, zmniejszając z każdym wywołaniem ilośc punktów do zdobycia. Pobiera oryginalne słówko
+ * i porównuje z aktualnym stanem wyświtlanego słówka. Odnajduje pozycje na których słówka różnią się. Jeśli nie ma różnic to oznacza
+ * że wszytskie litery zostały już odkryte więc użytkownik nie może uzyskać żadnych punktów a słówko zostanie dodane do powtórki. W innym
+ * przypadku z puli pozycji na którycj występują różnice wylosowana zastaje pozycja, która zostanie odkryta. Pula punktów do zdobycia zmniejsza się
+ * o jeden.*/
 string Scheduler::DajLitere(string sl_do_poprawy)
 {
     if(Zawartosc_listy()==true)
@@ -241,6 +262,7 @@ string Scheduler::DajLitere(string sl_do_poprawy)
   return sl_do_poprawy;
 }
 
+/*Funkcja wymazuje pierwsze słówko z listy słówek, jeśli lista nie jest pusta*/
 void Scheduler::Zdejmij_Ze_Stosu()
 {
     if (TablicaSlow.empty()==true)
@@ -249,11 +271,13 @@ void Scheduler::Zdejmij_Ze_Stosu()
     TablicaSlow.erase(TablicaSlow.begin());
 }
 
+/*Funkcja sprawdza czy lista słówek jest pusta. True - pusta, false zawiera co najmniej jeden element*/
 bool Scheduler::Zawartosc_listy()
 {
     return TablicaSlow.empty();
 }
 
+/*Funkcja zwraca możliwą do zdobycia ilość punktów za poprawną odpowiedź*/
 string Scheduler::DajPunkty()
 {
     stringstream ss;
@@ -262,6 +286,7 @@ string Scheduler::DajPunkty()
     return str;
 }
 
+/*Funkja zwraca sumę punktów jako łańcuch znaków*/
 string Scheduler::DajSume()
 {
     stringstream ss;
@@ -270,6 +295,8 @@ string Scheduler::DajSume()
     return str;
 }
 
+/*Funkcja sprawdza poprawność odpowiedzi użytkownika. Porównuje odpowiedź ze słówkiem wczytanym z pliku do słownika.
+ * Na tej podstawie zwraca true lub false*/
 bool Scheduler::SprawdzPoprawnosc(string answer)
 {
     Slowko temp = TablicaSlow.front();
@@ -282,6 +309,7 @@ bool Scheduler::SprawdzPoprawnosc(string answer)
         return false;
 }
 
+/*Funkcja po sprawdzeniu czy odpowiedź użytkownika była poprawna dodaje punkty do sumy już zdobytych*/
 void Scheduler::DodajPunkty(bool poprawnosc)
 {
     if (poprawnosc==true)
@@ -292,6 +320,8 @@ void Scheduler::DodajPunkty(bool poprawnosc)
 
 }
 
+/*Funkcja przygotowuje program do kolejnego wykonania. Czyści listę słówek, zeruje poziom, liczbę słówek, punkty do zdobycia
+ * i sumę punktów.
 void Scheduler::Jeszcze_raz()
 {
     TablicaSlow.clear();
@@ -301,6 +331,7 @@ void Scheduler::Jeszcze_raz()
     suma=0;
 }
 
+/*Funkcja usuwa aktualnie wczytany słownik a także czyści listę słówek, zeruje liczbę słówek oraz poziom i sumę punktów*/
 void Scheduler::UsunSlownik()
 {
     if(slownik!=NULL)
@@ -312,6 +343,8 @@ void Scheduler::UsunSlownik()
     level=0;
 }
 
+/*Funkcja zwraca ilośc słówek pozostałych na liście słówek. Rozmiar typu int jest konwertowany do zmiennej typu
+ * string za pomocą stringstream.
 string Scheduler::Pozostalych_Slowek()
 {
     stringstream ss;
@@ -320,6 +353,10 @@ string Scheduler::Pozostalych_Slowek()
     return str;
 }
 
+
+/*Funkcja dodaje słowo do powtórki jeśli użytkownik udzielił błędnej odpowiedzi. Poprawność odpowiedzi zapisana jest w zmiennej
+ * dobrze_czy_nie i na tej podstawie słówko może być zakwalifikowane do powtórki. Stringstream służy do zwrócenia ilości
+ * słówek do powtórki jako string (przekształca rozmiar typu int na napis*/
 string Scheduler::Dodaj_do_powtorki()
 {
     if (dobrze_czy_nie==false)
@@ -335,6 +372,7 @@ string Scheduler::Dodaj_do_powtorki()
     return str;
 }
 
+/*Destruktor klasy. Jeśli słownik nie jest pusty to go usuwa. Czyści listę słówek i słówek do powtórki.*/
 Scheduler::~Scheduler()
 {
     if(slownik!=NULL)

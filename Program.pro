@@ -16,13 +16,11 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     Scheduler.cpp \
     Slowko.cpp \
-    Slownik.cpp \
-    User.cpp
+    Slownik.cpp
 
 HEADERS  += mainwindow.h \
     Scheduler.h \
     Slowko.h \
-    Slownik.h \
-    User.h
+    Slownik.h
 
 FORMS    += mainwindow.ui

@@ -11,7 +11,6 @@ public:
 	friend ostream& operator<<(ostream &wyjscie, const Slowko &element);
     string WypiszPL();
     string WypiszANG();
-    //const char* DajSlowko();
 	~Slowko();
 };
 
